@@ -1,0 +1,32 @@
+{
+  "name": "Discover - Personalized Feed",
+  "short_name": "Discover",
+  "description": "Stay informed with personalized news, weather, and smart search",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#4338ca",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.jpg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["news", "productivity", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/screenshot-1.jpg",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ]
+}
