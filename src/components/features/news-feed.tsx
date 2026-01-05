@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { NewsCard } from "@/components/news-card"
+import { NewsCard } from "@/components/features/news-card"
 import { Loader2, Plus, Edit3, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {

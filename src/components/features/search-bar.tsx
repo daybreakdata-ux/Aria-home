@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Search, Loader2, Mic } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { SearchResult } from "@/components/search-result"
+import { SearchResult } from "@/components/features/search-result"
 
 export function SearchBar() {
   const [query, setQuery] = useState("")
