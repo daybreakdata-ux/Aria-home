@@ -9,7 +9,7 @@ import { InstallPrompt } from "@/components/features/install-prompt"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-[100dvh] bg-background dark:bg-gradient-to-r dark:from-slate-500 dark:to-slate-800 flex flex-col overflow-hidden">
       <AppHeader />
       <main className="mx-auto max-w-2xl px-4 py-6 space-y-6">
         <InstallPrompt />
