@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     // Generate response using OpenRouter
     const { text, usage } = await generateText({
-      model: openrouter("openai/gpt-oss-120b:free"),
+      model: openrouter("google/gemma-3-27b-it:free"),
       system: systemPrompt,
       prompt: query,
     })

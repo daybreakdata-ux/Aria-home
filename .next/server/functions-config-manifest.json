@@ -1,6 +1,11 @@
 {
   "version": 1,
   "functions": {
-    "/api/weather": {}
+    "/api/search": {
+      "maxDuration": 30
+    },
+    "/api/weather": {
+      "maxDuration": 30
+    }
   }
 }
