@@ -1,7 +1,9 @@
 import { generateObject } from "ai"
 import { z } from "zod"
 
+// Vercel configuration
 export const runtime = "nodejs"
+export const maxDuration = 30
 
 // Define the schema for weather data
 const weatherSchema = z.object({

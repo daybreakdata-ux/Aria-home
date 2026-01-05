@@ -1,7 +1,9 @@
 import { generateText } from "ai"
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 
+// Vercel Edge Runtime for faster cold starts and better scalability
 export const runtime = "nodejs"
+export const maxDuration = 30 // Maximum execution time in seconds
 
 const systemPrompt = `You are Aria, an intelligent and helpful AI search engine. Your role is to provide accurate, concise, and contextually relevant information to users' search queries.
 
@@ -46,22 +48,25 @@ export async function POST(request: Request) {
 
     // Generate response using OpenRouter
     const { text, usage } = await generateText({
-      model: openrouter("anthropic/claude-3.5-sonnet"),
+      model: openrouter("openai/gpt-oss-120b:free"),
       system: systemPrompt,
       prompt: query,
-      maxTokens: 1000,
     })
 
-    return Response.json({
-      query,
-      response: text,
-      usage: {
-        promptTokens: usage.promptTokens,
-        completionTokens: usage.completionTokens,
-        totalTokens: usage.totalTokens,
+    return Response.json(
+      {
+        query,
+        response: text,
+        usage: usage || undefined,
+        timestamp: new Date().toISOString(),
       },
-      timestamp: new Date().toISOString(),
-    })
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   } catch (error: any) {
     console.error("[Search API] Error:", error)
 

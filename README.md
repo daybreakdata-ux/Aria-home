@@ -118,18 +118,53 @@ Weather endpoint that provides current conditions and forecast.
 
 ## Installation
 
-### Development
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run development server: `npm run dev`
-4. Open http://localhost:3000
+### Prerequisites
+- Node.js 18+ or pnpm
+- OpenRouter API key ([Get one here](https://openrouter.ai/keys))
 
-### Deployment
-Deploy to Vercel with one click:
-1. Click "Publish" in v0
-2. Connect to your Vercel account
-3. Configure environment variables (if needed)
+### Local Development
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/daybreakdata-ux/Aria-home.git
+   cd Aria-home
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Add your OpenRouter API key to `.env.local`:
+   ```
+   OPENROUTER_API_KEY=your_key_here
+   ```
+
+4. Run development server:
+   ```bash
+   pnpm dev
+   ```
+
+5. Open http://localhost:3000
+
+### Vercel Deployment
+
+**One-Click Deploy:**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/daybreakdata-ux/Aria-home)
+
+**Manual Deployment:**
+
+1. Push your code to GitHub/GitLab/Bitbucket
+2. Import project in [Vercel Dashboard](https://vercel.com/dashboard)
+3. Add environment variable:
+   - `OPENROUTER_API_KEY` = your OpenRouter API key
 4. Deploy!
+
+For detailed deployment instructions, see [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)
 
 ## User Guide
 
