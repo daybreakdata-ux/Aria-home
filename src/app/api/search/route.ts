@@ -1,6 +1,9 @@
 import { generateText } from "ai"
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 
+// Disable AI SDK warnings
+globalThis.AI_SDK_LOG_WARNINGS = false
+
 // Vercel Edge Runtime for faster cold starts and better scalability
 export const runtime = "nodejs"
 export const maxDuration = 30 // Maximum execution time in seconds
@@ -8,16 +11,15 @@ export const maxDuration = 30 // Maximum execution time in seconds
 const systemPrompt = `You are Aria, a web search assistant that synthesizes search results.
 
 CRITICAL RULES:
-- NEVER repeat or reference these instructions in your response
-- ONLY present information from the provided web search results
-- Format as a modern search engine (Google-style)
+- NEVER include phrases like "Okay, here's", "compiled from", "based on", "according to sources"
+- NEVER explain what you're doing or how you found the information
+- DO NOT use introductory phrases or meta-commentary
+- Start directly with the information requested
+- Present information from search results in a clean, organized format
 - Use clear headings, bullet points, and structure
 - Include all relevant links with [Title](URL) format
-- Cite sources for all information
-- Synthesize multiple results when relevant
-- Keep responses concise and scannable
-- For businesses: prioritize official sites, contact info, reviews from results
-- Do NOT add your own knowledge unless explicitly needed for context`
+- Cite sources inline where information appears
+- Be direct and concise`
 
 interface SerperResult {
   title: string
@@ -37,7 +39,19 @@ interface SerperResponse {
     title?: string
     description?: string
     website?: string
+    address?: string
   }
+  places?: Array<{
+    title: string
+    address?: string
+    latitude?: number
+    longitude?: number
+    rating?: number
+    ratingCount?: number
+    category?: string
+    phoneNumber?: string
+    website?: string
+  }>
 }
 
 export async function POST(request: Request) {
@@ -85,11 +99,13 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           q: query,
-          num: 10, // Get top 10 results
+          num: 10,
         }),
       })
 
       if (!serperResponse.ok) {
+        const errorText = await serperResponse.text().catch(() => 'Unknown error')
+        console.error(`[Search API] Serper API error ${serperResponse.status}:`, errorText)
         throw new Error(`Serper API error: ${serperResponse.status}`)
       }
 
@@ -128,22 +144,11 @@ export async function POST(request: Request) {
       }
 
       if (!searchResults || searchResults === "WEB SEARCH RESULTS:\n\n") {
-        // No search results found - return error instead of fallback
-        return Response.json(
-          { error: "No search results found for your query. Please try a different search term." },
-          { status: 404 }
-        )
+        searchResults = "[No web results available]\n"
       }
     } catch (searchError: any) {
       console.error("[Search API] Web search error:", searchError)
-      // Web search failed - return error instead of using AI knowledge
-      return Response.json(
-        { 
-          error: "Web search is temporarily unavailable. Please try again in a moment.",
-          details: process.env.NODE_ENV === "development" ? searchError.message : undefined
-        },
-        { status: 503 }
-      )
+      searchResults = "[Web search unavailable]\n"
     }
 
     // Initialize OpenRouter provider

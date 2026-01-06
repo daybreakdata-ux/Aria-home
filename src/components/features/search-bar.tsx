@@ -54,20 +54,20 @@ export function SearchBar() {
   return (
     <div className="space-y-4">
       <form onSubmit={handleSearch} className="relative">
-        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground z-10" />
         <Input
           type="text"
           placeholder="Search anything..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 pr-28 h-12 text-base rounded-full bg-card"
+          className="pl-10 pr-28 h-12 text-base rounded-full bg-card relative z-0"
         />
         <Button
           type="button"
           size="icon"
           variant="ghost"
           onClick={handleVoiceSearch}
-          className={`absolute right-20 top-1/2 -translate-y-1/2 rounded-full ${isListening ? "text-red-500" : ""}`}
+          className={`absolute right-20 top-1/2 -translate-y-1/2 rounded-full z-10 ${isListening ? "text-red-500" : ""}`}
           aria-label="Voice search"
         >
           <Mic className="h-4 w-4" />
@@ -76,7 +76,7 @@ export function SearchBar() {
           type="submit"
           size="sm"
           disabled={isSearching || !query.trim()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full z-10"
         >
           {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
         </Button>

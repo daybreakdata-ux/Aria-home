@@ -24,6 +24,14 @@ export function WeatherWidget() {
 
   useEffect(() => {
     fetchWeather()
+    
+    // Listen for location updates
+    const handleLocationUpdate = () => {
+      fetchWeather()
+    }
+    
+    window.addEventListener("locationUpdated", handleLocationUpdate)
+    return () => window.removeEventListener("locationUpdated", handleLocationUpdate)
   }, [])
 
   const fetchWeather = async () => {

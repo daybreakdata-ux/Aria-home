@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface UserPreferences {
   location: string
+  useGeolocation: boolean
   newsCategory: string
   enableNotifications: boolean
   enableOfflineMode: boolean
@@ -20,6 +21,7 @@ interface UserPreferences {
 export default function SettingsPage() {
   const [preferences, setPreferences] = useState<UserPreferences>({
     location: "San Francisco",
+    useGeolocation: false,
     newsCategory: "general",
     enableNotifications: false,
     enableOfflineMode: true,
@@ -37,6 +39,8 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     localStorage.setItem("userPreferences", JSON.stringify(preferences))
+    // Trigger weather widget to refresh with new location
+    window.dispatchEvent(new Event("locationUpdated"))
     setIsSaved(true)
     setTimeout(() => setIsSaved(false), 2000)
   }
@@ -58,15 +62,59 @@ export default function SettingsPage() {
         {/* Location Settings */}
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Location</h2>
+          
+          {/* Geolocation Toggle */}
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
+            <div className="space-y-0.5">
+              <Label htmlFor="geolocation">Use Current Location</Label>
+              <p className="text-sm text-muted-foreground">
+                Automatically detect your location for weather
+              </p>
+            </div>
+            <Switch
+              id="geolocation"
+              checked={preferences.useGeolocation}
+              onCheckedChange={(checked) => {
+                setPreferences({ ...preferences, useGeolocation: checked })
+                if (checked && "geolocation" in navigator) {
+                  navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                      const { latitude, longitude } = position.coords
+                      console.log("Settings: Detected coordinates:", latitude, longitude)
+                      try {
+                        const response = await fetch(`/api/geocode?lat=${latitude}&lon=${longitude}`)
+                        const data = await response.json()
+                        console.log("Settings: Geocode response:", data)
+                        if (data.city) {
+                          setPreferences((prev) => ({ ...prev, location: data.fullName || data.city }))
+                        }
+                      } catch (error) {
+                        console.error("Failed to get location:", error)
+                      }
+                    }
+                  )
+                }
+              }}
+            />
+          </div>
+          
+          {/* Manual Location Input */}
           <div className="space-y-2">
-            <Label htmlFor="location">Your Location</Label>
+            <Label htmlFor="location">
+              {preferences.useGeolocation ? "Detected Location" : "Manual Location"}
+            </Label>
             <Input
               id="location"
               placeholder="Enter your city"
               value={preferences.location}
               onChange={(e) => setPreferences({ ...preferences, location: e.target.value })}
+              disabled={preferences.useGeolocation}
             />
-            <p className="text-sm text-muted-foreground">Used for weather updates and local news</p>
+            <p className="text-sm text-muted-foreground">
+              {preferences.useGeolocation 
+                ? "Location is automatically detected" 
+                : "Used for weather updates and local news"}
+            </p>
           </div>
         </Card>
 
