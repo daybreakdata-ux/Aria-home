@@ -47,13 +47,15 @@ export function NewsFeed() {
   const fetchNews = async () => {
     try {
       const preferences = localStorage.getItem("userPreferences")
-      const category = preferences ? JSON.parse(preferences).newsCategory : "general"
+      const parsedPreferences = preferences ? JSON.parse(preferences) : {}
+      const category = parsedPreferences.newsCategory || "general"
+      const location = parsedPreferences.location || ""
 
-      const response = await fetch(`/api/news?category=${category}`)
+      const response = await fetch(`/api/news?category=${category}&location=${encodeURIComponent(location)}`)
       const data = await response.json()
       setArticles(data.articles || [])
 
-      if (preferences && JSON.parse(preferences).enableOfflineMode) {
+      if (parsedPreferences.enableOfflineMode) {
         localStorage.setItem("cachedArticles", JSON.stringify(data.articles))
       }
     } catch (error) {

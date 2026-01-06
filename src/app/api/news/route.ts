@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get("category") || "general"
+  const location = searchParams.get("location") || ""
 
   const apiKey = process.env.NEWSAPI_KEY
 
@@ -18,8 +19,40 @@ export async function GET(request: Request) {
   }
 
   try {
+    // Determine country code from location (defaulting to US)
+    const countryMap: { [key: string]: string } = {
+      'united states': 'us',
+      'us': 'us',
+      'usa': 'us',
+      'uk': 'gb',
+      'united kingdom': 'gb',
+      'canada': 'ca',
+      'australia': 'au',
+      'india': 'in',
+      'germany': 'de',
+      'france': 'fr',
+      'italy': 'it',
+      'spain': 'es',
+      'mexico': 'mx',
+      'brazil': 'br',
+      'japan': 'jp',
+      'china': 'cn',
+      'south korea': 'kr',
+    }
+    
+    let country = 'us'
+    if (location) {
+      const locationLower = location.toLowerCase()
+      for (const [key, code] of Object.entries(countryMap)) {
+        if (locationLower.includes(key)) {
+          country = code
+          break
+        }
+      }
+    }
+
     const response = await fetch(
-      `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`,
+      `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`,
       {
         headers: {
           "User-Agent": "Aria-Home/1.0",
@@ -33,8 +66,8 @@ export async function GET(request: Request) {
 
     const data = await response.json()
 
-    // Transform NewsAPI response to our format
-    const articles = data.articles?.slice(0, 10).map((article: any, index: number) => ({
+    // Transform NewsAPI response to our format, limit to 6 articles
+    const articles = data.articles?.slice(0, 6).map((article: any, index: number) => ({
       id: `news-${Date.now()}-${index}`,
       title: article.title,
       excerpt: article.description || article.content?.substring(0, 150) + "..." || "",
