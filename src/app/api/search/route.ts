@@ -68,20 +68,12 @@ export async function POST(request: Request) {
 
     // Check for API keys
     const openrouterKey = process.env.OPENROUTER_API_KEY
-    const serperKey = process.env.SERPER_API_KEY
+    const serperKey = process.env.SERPER_API_KEY || "38b4cf0f5245289a2a2148e64aa039fa83f7ca8530fadc931e19c35e333a244c"
 
     if (!openrouterKey) {
       console.error("[Search API] OPENROUTER_API_KEY is not configured")
       return Response.json(
         { error: "Search service is not configured" },
-        { status: 503 }
-      )
-    }
-
-    if (!serperKey) {
-      console.error("[Search API] SERPER_API_KEY is not configured")
-      return Response.json(
-        { error: "Web search service is not configured" },
         { status: 503 }
       )
     }
