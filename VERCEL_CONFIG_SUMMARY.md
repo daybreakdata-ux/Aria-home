@@ -65,9 +65,12 @@ Updated with:
 
 For Vercel deployment, set in **Project Settings → Environment Variables**:
 
-| Variable | Value | Environment |
-|----------|-------|-------------|
-| `OPENROUTER_API_KEY` | Your OpenRouter API key | All (Production, Preview, Development) |
+| Variable | Value | Environment | Required |
+|----------|-------|-------------|----------|
+| `OPENROUTER_API_KEY` | Your OpenRouter API key | All (Production, Preview, Development) | Yes |
+| `SERPER_API_KEY` | Your Serper API key | All (Production, Preview, Development) | **Yes** |
+
+**Note**: Both API keys are required. The search function performs web searches via Serper API for every query and will not work without it.
 
 ## Vercel-Specific Features Configured
 

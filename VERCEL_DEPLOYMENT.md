@@ -22,9 +22,16 @@ This guide walks you through deploying the Aria Home application to Vercel.
 Before deploying, add the required environment variables:
 
 1. In the Vercel project setup, scroll to **"Environment Variables"**
-2. Add the following variable:
+2. Add the following variables:
+   
+   **OPENROUTER_API_KEY**
    - **Name**: `OPENROUTER_API_KEY`
-   - **Value**: Your OpenRouter API key
+   - **Value**: Your OpenRouter API key from [openrouter.ai/keys](https://openrouter.ai/keys)
+   - **Environment**: Select all (Production, Preview, Development)
+   
+   **SERPER_API_KEY** (Required)
+   - **Name**: `SERPER_API_KEY`
+   - **Value**: Your Serper API key from [serper.dev](https://serper.dev/)
    - **Environment**: Select all (Production, Preview, Development)
 
 3. Click **"Deploy"**
@@ -59,7 +66,8 @@ The search API is configured with:
 ### Environment Variables
 
 Required variables:
-- `OPENROUTER_API_KEY` - Your OpenRouter API key
+- `OPENROUTER_API_KEY` - Your OpenRouter API key (get from [openrouter.ai/keys](https://openrouter.ai/keys))
+- `SERPER_API_KEY` - Your Serper API key (get from [serper.dev](https://serper.dev/)) - **REQUIRED** for search functionality
 - `NODE_ENV` - Automatically set by Vercel (production/preview/development)
 
 ### API Routes
@@ -90,6 +98,7 @@ vercel --prod
 
 ```bash
 vercel env add OPENROUTER_API_KEY
+vercel env add SERPER_API_KEY
 ```
 
 ## Continuous Deployment
@@ -166,6 +175,15 @@ Access at: **Your Project** → **Analytics**
 **"Search service is not configured"**
 - Environment variable not set or misspelled
 - Solution: Add `OPENROUTER_API_KEY` in Vercel project settings
+
+**"Web search service is not configured"**
+- Serper API key not set
+- Solution: Add `SERPER_API_KEY` in Vercel project settings
+
+**"Web search is temporarily unavailable"**
+- Serper API is down or rate limited
+- Invalid Serper API key
+- Solution: Check your Serper dashboard at [serper.dev/dashboard](https://serper.dev/dashboard)
 
 **"Authentication failed"**
 - Invalid or expired API key

@@ -13,6 +13,7 @@ Use this checklist to ensure your Aria Home app is properly configured for Verce
 
 ### ✅ Environment Variables
 - [ ] OpenRouter API key obtained from [openrouter.ai/keys](https://openrouter.ai/keys)
+- [ ] Serper API key obtained from [serper.dev](https://serper.dev/) - **REQUIRED**
 - [ ] `.env.example` file exists in repository
 - [ ] All required environment variables documented
 
@@ -32,9 +33,10 @@ Use this checklist to ensure your Aria Home app is properly configured for Verce
 
 ### ✅ Environment Variables Configuration
 - [ ] Added `OPENROUTER_API_KEY` in Vercel project settings
+- [ ] Added `SERPER_API_KEY` in Vercel project settings
 - [ ] Selected all environments (Production, Preview, Development)
-- [ ] Verified variable name is spelled correctly
-- [ ] No extra spaces in variable name or value
+- [ ] Verified variable names are spelled correctly
+- [ ] No extra spaces in variable names or values
 
 ### ✅ Build Settings (Usually Auto-Detected)
 - [ ] Framework: Next.js
@@ -87,6 +89,20 @@ Use this checklist to ensure your Aria Home app is properly configured for Verce
 1. Go to Vercel Project Settings → Environment Variables
 2. Add `OPENROUTER_API_KEY` with your API key
 3. Redeploy the project
+
+### "Web search service is not configured"
+**Problem**: `SERPER_API_KEY` environment variable not set
+**Solution**: 
+1. Go to Vercel Project Settings → Environment Variables
+2. Add `SERPER_API_KEY` with your Serper API key
+3. Redeploy the project
+
+### "Web search is temporarily unavailable"
+**Problem**: Serper API error or rate limit
+**Solution**:
+1. Check Serper API status and usage at [serper.dev/dashboard](https://serper.dev/dashboard)
+2. Verify API key is valid
+3. Check if you've exceeded your rate limit
 
 ### Build Fails
 **Problem**: Dependencies or build errors
@@ -144,17 +160,12 @@ Use this checklist to ensure your Aria Home app is properly configured for Verce
 ## Quick Commands
 
 ```bash
-# Test build locally
-pnpm build
-
-# Run production build locally
-pnpm start
-
-# Deploy via Vercel CLI
-vercel --prod
-
 # Check environment variables
 vercel env ls
+
+# Add environment variables
+vercel env add OPENROUTER_API_KEY
+vercel env add SERPER_API_KEY
 
 # View logs
 vercel logs
