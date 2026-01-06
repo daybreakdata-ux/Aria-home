@@ -53,7 +53,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="h-[100dvh] bg-gradient-to-r from-violet-200 to-pink-200 dark:from-slate-500 dark:to-slate-800 flex flex-col">
+    <div className="h-[100dvh] bg-gradient-to-r from-slate-500 to-slate-800 flex flex-col">
       <AppHeader />
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
