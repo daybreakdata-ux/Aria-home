@@ -20,10 +20,14 @@ export function SearchBar() {
 
     setIsSearching(true)
     try {
+      // Get user location from preferences
+      const preferences = localStorage.getItem("userPreferences")
+      const location = preferences ? JSON.parse(preferences).location : null
+
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, location }),
       })
 
       const data = await response.json()

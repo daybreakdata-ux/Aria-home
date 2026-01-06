@@ -57,7 +57,7 @@ interface SerperResponse {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { query } = body
+    const { query, location } = body
 
     if (!query || typeof query !== "string" || !query.trim()) {
       return Response.json(
@@ -66,14 +66,44 @@ export async function POST(request: Request) {
       )
     }
 
+    // Detect if query is about a business or place
+    const businessKeywords = [
+      'restaurant', 'hotel', 'store', 'shop', 'cafe', 'coffee', 'bar', 'gym',
+      'hospital', 'pharmacy', 'bank', 'gas station', 'walmart', 'target',
+      'mcdonalds', 'starbucks', 'pizza', 'burger', 'sushi', 'mexican',
+      'chinese', 'italian', 'food', 'eat', 'market', 'mall', 'cinema',
+      'theater', 'park', 'museum', 'library', 'school', 'church', 'salon',
+      'spa', 'dentist', 'doctor', 'vet', 'near me', 'nearby', 'open now',
+      'hours', 'address', 'phone', 'directions'
+    ]
+    
+    const isBusinessQuery = businessKeywords.some(keyword => 
+      query.toLowerCase().includes(keyword)
+    )
+    
+    // Auto-append location to business queries if location is provided
+    let enhancedQuery = query
+    if (isBusinessQuery && location && !query.toLowerCase().includes(location.toLowerCase())) {
+      enhancedQuery = `${query} in ${location}`
+      console.log(`[Search API] Enhanced query with location: "${enhancedQuery}"`)
+    }
+
     // Check for API keys
     const openrouterKey = process.env.OPENROUTER_API_KEY
-    const serperKey = process.env.SERPER_API_KEY || "38b4cf0f5245289a2a2148e64aa039fa83f7ca8530fadc931e19c35e333a244c"
+    const serperKey = process.env.SERPER_API_KEY
 
     if (!openrouterKey) {
       console.error("[Search API] OPENROUTER_API_KEY is not configured")
       return Response.json(
         { error: "Search service is not configured" },
+        { status: 503 }
+      )
+    }
+
+    if (!serperKey) {
+      console.error("[Search API] SERPER_API_KEY is not configured")
+      return Response.json(
+        { error: "Web search service is not configured" },
         { status: 503 }
       )
     }
@@ -90,7 +120,7 @@ export async function POST(request: Request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          q: query,
+          q: enhancedQuery,
           num: 10,
         }),
       })
